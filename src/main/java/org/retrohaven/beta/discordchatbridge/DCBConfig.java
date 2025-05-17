@@ -1,4 +1,4 @@
-package com.johnymuffin.beta.discordchatbridge;
+package org.retrohaven.beta.discordchatbridge;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
