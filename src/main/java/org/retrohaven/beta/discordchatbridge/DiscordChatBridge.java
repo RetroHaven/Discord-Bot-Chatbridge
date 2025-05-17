@@ -1,4 +1,4 @@
-package com.johnymuffin.beta.discordchatbridge;
+package org.retrohaven.beta.discordchatbridge;
 
 import com.johnymuffin.discordcore.DiscordCore;
 import com.johnymuffin.discordcore.DiscordShutdownEvent;
@@ -10,6 +10,9 @@ import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import org.retrohaven.beta.discordchatbridge.DCBGameListener;
+import org.retrohaven.beta.discordchatbridge.DCBPlayerDeathListener;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,9 +81,12 @@ public class DiscordChatBridge extends JavaPlugin {
         discordCore.getDiscordBot().jda.addEventListener(discordListener);
         //Discord Game Bridge
         final DCBGameListener gameListener = new DCBGameListener(plugin);
+        final DCBPlayerDeathListener deathDamageListener = new DCBPlayerDeathListener(plugin);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_JOIN, gameListener, Event.Priority.Monitor, this);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_QUIT, gameListener, Event.Priority.Monitor, this);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_CHAT, gameListener, Event.Priority.Highest, this);
+        getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DAMAGE, deathDamageListener, Event.Priority.Normal, this);
+        getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, deathDamageListener, Event.Priority.Normal, this);
         final ShutdownListener shutdownListener = new ShutdownListener();
         getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, shutdownListener, Event.Priority.Normal, plugin);
 

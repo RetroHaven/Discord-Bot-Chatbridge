@@ -1,4 +1,4 @@
-package com.johnymuffin.beta.discordchatbridge;
+package org.retrohaven.beta.discordchatbridge;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.Color;

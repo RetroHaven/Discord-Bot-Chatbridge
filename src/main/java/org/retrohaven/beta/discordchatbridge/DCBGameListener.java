@@ -1,10 +1,12 @@
-package com.johnymuffin.beta.discordchatbridge;
+package org.retrohaven.beta.discordchatbridge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import org.retrohaven.beta.discordchatbridge.DiscordChatBridge;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -37,6 +39,7 @@ public class DCBGameListener extends PlayerListener {
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
+        System.out.println("Test!");
         if (event.isCancelled()) {
             return;
         }
@@ -65,9 +68,9 @@ public class DCBGameListener extends PlayerListener {
     }
 
     public String sanitizeMessage(String chatMessage) {
-        chatMessage = chatMessage.replaceAll(Pattern.quote("@"), " ");
-        chatMessage = chatMessage.replaceAll(Pattern.quote("@everyone"), " ");
-        chatMessage = chatMessage.replaceAll(Pattern.quote("@here"), " ");
+        chatMessage = chatMessage.replaceAll(Pattern.quote("@"), "@ ");
+        chatMessage = chatMessage.replaceAll(Pattern.quote("@everyone"), "@ everyone");
+        chatMessage = chatMessage.replaceAll(Pattern.quote("@here"), "@ here");
         return chatMessage;
     }
 
