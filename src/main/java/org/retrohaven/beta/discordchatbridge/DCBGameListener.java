@@ -1,10 +1,12 @@
-package com.johnymuffin.beta.discordchatbridge;
+package org.retrohaven.beta.discordchatbridge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import org.retrohaven.beta.discordchatbridge.DiscordChatBridge;
 
 import java.io.IOException;
 import java.util.logging.Level;
