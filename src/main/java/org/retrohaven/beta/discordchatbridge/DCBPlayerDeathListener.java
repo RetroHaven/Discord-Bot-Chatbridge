@@ -56,7 +56,6 @@ public class DCBPlayerDeathListener extends EntityListener {
 
     @Override
     public void onEntityDamage(EntityDamageEvent ev) {
-        System.out.println("Damage taken!");
         if (!(ev instanceof EntityDamageByEntityEvent) || !(isEntityCacheable(ev.getEntity()))) return;
         EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ev;
 
@@ -65,7 +64,6 @@ public class DCBPlayerDeathListener extends EntityListener {
 
     @Override
     public void onEntityDeath(EntityDeathEvent e) {
-        System.out.println("Dead!");
         Entity entity = e.getEntity();
 
         if (!isEntityCacheable(entity)) return;

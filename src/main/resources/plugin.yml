@@ -4,8 +4,7 @@ authors:
   - Owen2k6
 version: 2.0.8
 main: org.retrohaven.beta.discordchatbridge.DiscordChatBridge
-depend:
-  - BetaDeaths
 softdepend:
   - DiscordCore
   - DiscordAuthentication
+  - BetaDeaths

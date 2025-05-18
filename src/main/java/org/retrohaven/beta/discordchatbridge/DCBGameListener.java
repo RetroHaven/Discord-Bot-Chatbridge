@@ -39,7 +39,6 @@ public class DCBGameListener extends PlayerListener {
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
-        System.out.println("Test!");
         if (event.isCancelled()) {
             return;
         }
