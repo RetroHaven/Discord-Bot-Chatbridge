@@ -33,6 +33,10 @@ public class DCBDiscordListener extends ListenerAdapter {
         if (event.getMessage().getContentRaw().isEmpty()) {
             return;
         }
+        //Ignore messages starting with #, but not the ones using markdown titles
+        if (event.getMessage().getContentRaw().substring(0, 1) == "#" && event.getMessage().getContentRaw().substring(1, 2) != " ") {
+            return;
+        }
 
         String gameBridgeChannelID = plugin.getConfig().getConfigString("channel-id");
         String[] messageCMD = event.getMessage().getContentRaw().split(" ");
