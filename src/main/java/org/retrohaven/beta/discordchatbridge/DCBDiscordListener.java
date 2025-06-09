@@ -34,7 +34,7 @@ public class DCBDiscordListener extends ListenerAdapter {
             return;
         }
         //Ignore messages starting with #, but not the ones using markdown titles
-        if (event.getMessage().getContentRaw().substring(0, 1) == "#" && event.getMessage().getContentRaw().substring(1, 2) != " ") {
+        if (event.getMessage().getContentRaw().startsWith("#") && !event.getMessage().getContentRaw().substring(1).startsWith(" ")) {
             return;
         }
 
