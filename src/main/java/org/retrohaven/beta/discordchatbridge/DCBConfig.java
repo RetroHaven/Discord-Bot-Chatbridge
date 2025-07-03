@@ -19,6 +19,7 @@ public class DCBConfig extends Configuration {
         //Setting
         generateConfigOption("server-name", "BetaServer");
         generateConfigOption("channel-id", "id");
+        generateConfigOption("staff-messaging-channel-id", "");
         generateConfigOption("bot-command-channel-info", "This feature limits all Discord commands so that they can only be used in a specific channel.");
         generateConfigOption("bot-command-channel-id", "id");
         generateConfigOption("bot-command-channel-enabled", false);
