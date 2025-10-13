@@ -121,6 +121,26 @@ public class DCBDiscordListener extends ListenerAdapter {
             }
         }
 
+        //Check if message is in staff messaging channel
+        String staffChannelId = StaffMessagingRelayAPI.getStaffChannelId();
+        if (staffChannelId != null && !staffChannelId.isEmpty() &&
+            event.getChannel().getId().equalsIgnoreCase(staffChannelId)) {
+
+            String discordUsername;
+            if (event.getMember().getNickname() != null) {
+                discordUsername = event.getMember().getNickname();
+            } else {
+                discordUsername = event.getAuthor().getName();
+            }
+
+            String message = event.getMessage().getContentDisplay();
+            message = ChatColor.stripColor(message); // Remove any color codes for staff messages
+
+            // Notify all registered listeners (like RH-Commands) about the staff message
+            StaffMessagingRelayAPI.notifyStaffMessageFromDiscord(discordUsername, message);
+            return;
+        }
+
         //Is the message in the game bridge channel
         if (event.getChannel().getId().equalsIgnoreCase(gameBridgeChannelID)) {
             String displayName = null;

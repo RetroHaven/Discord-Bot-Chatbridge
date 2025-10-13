@@ -91,11 +91,15 @@ public class DiscordChatBridge extends JavaPlugin {
         // Register game and death listeners
         final DCBGameListener gameListener = new DCBGameListener(plugin);
         final DCBPlayerDeathListener deathDamageListener = new DCBPlayerDeathListener(plugin);
+        final DCBBanListener banListener = new DCBBanListener(plugin);
+        final DCBBanListener.DCBBanServerListener banServerListener = new DCBBanListener.DCBBanServerListener(plugin, banListener);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_JOIN, gameListener, Event.Priority.Monitor, this);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_QUIT, gameListener, Event.Priority.Monitor, this);
         getServer().getPluginManager().registerEvent(Event.Type.PLAYER_CHAT, gameListener, Event.Priority.Highest, this);
         getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DAMAGE, deathDamageListener, Event.Priority.Normal, this);
         getServer().getPluginManager().registerEvent(Event.Type.ENTITY_DEATH, deathDamageListener, Event.Priority.Normal, this);
+        getServer().getPluginManager().registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, banListener, Event.Priority.Monitor, this);
+        getServer().getPluginManager().registerEvent(Event.Type.SERVER_COMMAND, banServerListener, Event.Priority.Monitor, this);
         final ShutdownListener shutdownListener = new ShutdownListener();
         getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, shutdownListener, Event.Priority.Normal, plugin);
 

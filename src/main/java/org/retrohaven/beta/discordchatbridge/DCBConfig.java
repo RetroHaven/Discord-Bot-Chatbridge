@@ -51,6 +51,9 @@ public class DCBConfig extends Configuration {
         generateConfigOption("webhook.url", "url");
         generateConfigOption("webhook.info", "This option when configured with webhook and enabled allows for messages posted by the bot to use a players avatar and username.");
 
+        //Ban Relay
+        generateConfigOption("ban-relay.enabled", true);
+        generateConfigOption("ban-relay.info", "This option relays ban messages from Apollo or other ban plugins to Discord.");
 
     }
 
