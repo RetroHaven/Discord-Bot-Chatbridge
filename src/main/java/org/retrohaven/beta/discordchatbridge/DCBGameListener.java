@@ -26,6 +26,12 @@ public class DCBGameListener extends PlayerListener {
         chatMessage = chatMessage.replace("%onlineCount%", String.valueOf(Bukkit.getServer().getOnlinePlayers().length));
         chatMessage = chatMessage.replace("%maxCount%", String.valueOf(Bukkit.getServer().getMaxPlayers()));
         plugin.getDiscordCore().getDiscordBot().discordSendToChannel(plugin.getConfig().getConfigString("channel-id"), chatMessage);
+
+        // Relay to external bot via relay server if enabled
+        if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+            String relayMessage = "GAME_JOIN " + event.getPlayer().getName();
+            plugin.getRelayServer().broadcast(relayMessage);
+        }
     }
 
     @Override
@@ -35,11 +41,47 @@ public class DCBGameListener extends PlayerListener {
         chatMessage = chatMessage.replace("%onlineCount%", String.valueOf(Bukkit.getServer().getOnlinePlayers().length - 1));
         chatMessage = chatMessage.replace("%maxCount%", String.valueOf(Bukkit.getServer().getMaxPlayers()));
         plugin.getDiscordCore().getDiscordBot().discordSendToChannel(plugin.getConfig().getConfigString("channel-id"), chatMessage);
+
+        // Relay to external bot via relay server if enabled
+        if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+            String relayMessage = "GAME_QUIT " + event.getPlayer().getName();
+            plugin.getRelayServer().broadcast(relayMessage);
+        }
     }
 
     @Override
     public void onPlayerChat(PlayerChatEvent event) {
         if (event.isCancelled()) {
+            return;
+        }
+
+        String message = event.getMessage();
+        boolean suppressRelay = false;
+
+        // Check if message starts with "# " (command that should not be relayed)
+        if (message.startsWith("# ")) {
+            suppressRelay = true;
+            message = message.substring(2); // Remove "# " prefix
+        }
+
+        // Check if message is an IRC command (starts with !)
+        if (message.startsWith("!")) {
+            // Send IRC command to relay server
+            if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+                String relayMessage = "IRC_CMD GAME " + event.getPlayer().getName() + " " + message;
+                plugin.getRelayServer().broadcast(relayMessage);
+
+                // If suppressed, don't relay to Discord/game chat
+                if (suppressRelay) {
+                    event.setCancelled(true);
+                }
+                return;
+            }
+        }
+
+        // If message was suppressed (started with "# "), cancel it from being relayed
+        if (suppressRelay) {
+            event.setCancelled(true);
             return;
         }
 
@@ -63,6 +105,12 @@ public class DCBGameListener extends PlayerListener {
             chatMessage = chatMessage.replace("%message%", event.getMessage());
             chatMessage = sanitizeMessage(chatMessage);
             plugin.getDiscordCore().getDiscordBot().discordSendToChannel(plugin.getConfig().getConfigString("channel-id"), chatMessage);
+        }
+
+        // Relay to external bot via relay server if enabled
+        if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+            String relayMessage = "GAME_CHAT " + event.getPlayer().getName() + " " + event.getMessage();
+            plugin.getRelayServer().broadcast(relayMessage);
         }
     }
 

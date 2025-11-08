@@ -144,5 +144,13 @@ public class DCBPlayerDeathListener extends EntityListener {
         }
         chatMessage = chatMessage.replace("(damager)", damagerName);
         plugin.getDiscordCore().getDiscordBot().discordSendToChannel(plugin.getConfig().getConfigString("channel-id"), chatMessage);
+
+        // Relay to external bot via relay server if enabled
+        if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+            // Strip Discord formatting from death message
+            String plainMessage = chatMessage.replace("**", "");
+            String relayMessage = "GAME_DEATH " + plainMessage;
+            plugin.getRelayServer().broadcast(relayMessage);
+        }
     }
 }

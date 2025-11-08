@@ -25,6 +25,8 @@ public class DiscordChatBridge extends JavaPlugin {
     private DiscordCore discordCore;
     private DCBConfig dcbConfig;
     private DCBDiscordListener discordListener;
+    private RelayServer relayServer;
+    private boolean relayServerEnabled = false;
     private boolean enabled = false;
     private Integer taskID = null;
     private boolean shutdown = false;
@@ -88,6 +90,27 @@ public class DiscordChatBridge extends JavaPlugin {
             log.info("Staff messaging relay enabled for channel ID: " + staffChannelId);
         }
 
+        // RELAY SERVER
+        if (dcbConfig.getConfigBoolean("relay-server.enabled")) {
+            try {
+                log.info("Relay server is enabled, starting...");
+                String bindAddress = dcbConfig.getConfigString("relay-server.bind-address");
+                int port = dcbConfig.getConfigInteger("relay-server.port");
+                String password = dcbConfig.getConfigString("relay-server.password");
+
+                relayServer = new RelayServer(this, bindAddress, port, password);
+                relayServer.start();
+                relayServerEnabled = true;
+                log.info("Relay server started successfully on " + bindAddress + ":" + port);
+            } catch (Exception e) {
+                log.severe("Failed to start relay server: " + e.getMessage());
+                e.printStackTrace();
+                relayServerEnabled = false;
+            }
+        } else {
+            log.info("Relay server is disabled in config");
+        }
+
         // Register game and death listeners
         final DCBGameListener gameListener = new DCBGameListener(plugin);
         final DCBPlayerDeathListener deathDamageListener = new DCBPlayerDeathListener(plugin);
@@ -130,6 +153,12 @@ public class DiscordChatBridge extends JavaPlugin {
     public void onDisable() {
         if (enabled) {
             logger(Level.INFO, "Disabling.");
+
+            // Stop relay server if enabled
+            if (relayServerEnabled && relayServer != null) {
+                relayServer.stop();
+            }
+
             if (!shutdown) {
                 handleDiscordCoreShutdown();
             }
@@ -149,6 +178,14 @@ public class DiscordChatBridge extends JavaPlugin {
 
     public DiscordCore getDiscordCore() {
         return discordCore;
+    }
+
+    public RelayServer getRelayServer() {
+        return relayServer;
+    }
+
+    public boolean isRelayServerEnabled() {
+        return relayServerEnabled;
     }
 
     protected void handleDiscordCoreShutdown() {

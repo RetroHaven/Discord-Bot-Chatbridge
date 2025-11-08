@@ -143,6 +143,49 @@ public class DCBDiscordListener extends ListenerAdapter {
 
         //Is the message in the game bridge channel
         if (event.getChannel().getId().equalsIgnoreCase(gameBridgeChannelID)) {
+            String rawMessage = event.getMessage().getContentRaw();
+            boolean suppressRelay = false;
+
+            // Check if message starts with "# " (command that should not be relayed)
+            if (rawMessage.startsWith("# ")) {
+                suppressRelay = true;
+                rawMessage = rawMessage.substring(2); // Remove "# " prefix
+            }
+
+            // Check if message is an IRC command (starts with !)
+            if (rawMessage.startsWith("!")) {
+                // Send IRC command to relay server
+                if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+                    String displayName;
+                    if (event.getMember().getNickname() != null) {
+                        displayName = event.getMember().getNickname();
+                    } else {
+                        displayName = event.getAuthor().getName();
+                    }
+
+                    String relayMessage = "IRC_CMD DISCORD " + displayName + " " + rawMessage;
+                    plugin.getRelayServer().broadcast(relayMessage);
+
+                    // If not suppressed, still broadcast to game
+                    if (!suppressRelay) {
+                        final String finalDisplayName = displayName;
+                        final String finalRawMessage = rawMessage;
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
+                                String chatMessage = "§f[§9Discord§f]§7 " + finalDisplayName + ": " + finalRawMessage;
+                                Bukkit.getServer().broadcastMessage(chatMessage);
+                            }
+                        });
+                    }
+                }
+                return;
+            }
+
+            // If message was suppressed (started with "# "), don't relay to game
+            if (suppressRelay) {
+                return;
+            }
+
             String displayName = null;
             String prefix = null;
             UUID playerUUID = null;
@@ -211,6 +254,14 @@ public class DCBDiscordListener extends ListenerAdapter {
             chatMessage = chatMessage.replaceAll("(&([a-f0-9]))", "\u00A7$2");
             chatMessage = chatMessage.replace("%prefix%", prefix);
             Bukkit.getServer().broadcastMessage(chatMessage);
+
+            // Relay to external bot via relay server if enabled
+            if (plugin.isRelayServerEnabled() && plugin.getRelayServer() != null) {
+                // Use | as delimiter to properly handle usernames with spaces
+                String relayMessage = "DISCORD_MSG " + displayName + "|" + dmsg;
+                plugin.getRelayServer().broadcast(relayMessage);
+            }
+
             return;
         }
 

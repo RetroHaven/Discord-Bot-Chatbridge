@@ -55,6 +55,14 @@ public class DCBConfig extends Configuration {
         generateConfigOption("ban-relay.enabled", true);
         generateConfigOption("ban-relay.info", "This option relays ban messages from Apollo or other ban plugins to Discord.");
 
+        //Relay Server
+        generateConfigOption("relay-server.enabled", false);
+        generateConfigOption("relay-server.info", "Enable TCP relay server for external IRC bots. This allows a Python/Node.js bot to connect and handle IRC.");
+        generateConfigOption("relay-server.port", 38622);
+        generateConfigOption("relay-server.bind-address", "127.0.0.1");
+        generateConfigOption("relay-server.password", "changeme");
+        generateConfigOption("relay-server.password-info", "Password required for external bots to authenticate");
+
     }
 
     private void generateConfigOption(String key, Object defaultValue) {
