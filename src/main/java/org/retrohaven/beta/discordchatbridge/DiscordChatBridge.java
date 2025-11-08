@@ -10,6 +10,8 @@ import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.retrohaven.beta.discordchatbridge.commands.*;
+import org.retrohaven.beta.discordchatbridge.DCBCommandHandler;
 
 import org.retrohaven.beta.discordchatbridge.DCBGameListener;
 import org.retrohaven.beta.discordchatbridge.DCBPlayerDeathListener;
@@ -25,6 +27,7 @@ public class DiscordChatBridge extends JavaPlugin {
     private DiscordCore discordCore;
     private DCBConfig dcbConfig;
     private DCBDiscordListener discordListener;
+    private DCBCommandHandler commandHandler;
     private RelayServer relayServer;
     private boolean relayServerEnabled = false;
     private boolean enabled = false;
@@ -125,6 +128,9 @@ public class DiscordChatBridge extends JavaPlugin {
         getServer().getPluginManager().registerEvent(Event.Type.SERVER_COMMAND, banServerListener, Event.Priority.Monitor, this);
         final ShutdownListener shutdownListener = new ShutdownListener();
         getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, shutdownListener, Event.Priority.Normal, plugin);
+
+        // Register commands
+        commandHandler.registerCommand(HelloWorld);
 
         enabled = true;
 
