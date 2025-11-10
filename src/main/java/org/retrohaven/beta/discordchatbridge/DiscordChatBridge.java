@@ -11,7 +11,6 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.retrohaven.beta.discordchatbridge.commands.*;
-import org.retrohaven.beta.discordchatbridge.DCBCommandHandler;
 
 import org.retrohaven.beta.discordchatbridge.DCBGameListener;
 import org.retrohaven.beta.discordchatbridge.DCBPlayerDeathListener;
@@ -80,8 +79,13 @@ public class DiscordChatBridge extends JavaPlugin {
             return;
         }
 
+        // Register commands - we do this early since the command handler is then passed to other stuff
+        commandHandler = new DCBCommandHandler(plugin);
+        commandHandler.registerCommand(new HelloWorld());
+        commandHandler.registerCommand(new PlayerList());
+
         discordCore = (DiscordCore) Bukkit.getServer().getPluginManager().getPlugin("DiscordCore");
-        discordListener = new DCBDiscordListener(plugin);
+        discordListener = new DCBDiscordListener(plugin, commandHandler);
         discordCore.getDiscordBot().jda.addEventListener(discordListener);
 
         // STAFF MESSAGING RELAY
@@ -128,9 +132,6 @@ public class DiscordChatBridge extends JavaPlugin {
         getServer().getPluginManager().registerEvent(Event.Type.SERVER_COMMAND, banServerListener, Event.Priority.Monitor, this);
         final ShutdownListener shutdownListener = new ShutdownListener();
         getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, shutdownListener, Event.Priority.Normal, plugin);
-
-        // Register commands
-        commandHandler.registerCommand(HelloWorld);
 
         enabled = true;
 

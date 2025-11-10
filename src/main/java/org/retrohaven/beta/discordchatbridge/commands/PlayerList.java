@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HelloWorld implements DCBCommand {
-    Set<String> aliases = new HashSet<>(Arrays.asList("list", "playerlist", "who", "players"));
+public class PlayerList implements DCBCommand {
+    Set<String> aliases = new HashSet<>(Arrays.asList("list", "playerlist"));
 
     public Set<String> getAliases() {
         return aliases;
@@ -19,6 +19,6 @@ public class HelloWorld implements DCBCommand {
     }
 
     public String onCommand(String[] arguments) {
-        return "Hello world!";
+        return "";
     }
 }

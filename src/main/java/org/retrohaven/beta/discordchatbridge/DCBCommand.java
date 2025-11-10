@@ -10,8 +10,14 @@ public interface DCBCommand {
     Set<String> getAliases();
 
     /*
+     * Config setting to enable or disable the command.
+     * To not require any config setting, return null.
+     */
+    String getConfigOption();
+
+    /*
      * Is executed on each command. The resulting message is sent as a response.
      * To not send any message, return null.
      */
-    String onCommand(ArrayList<String> arguments);
+    String onCommand(String[] arguments);
 }

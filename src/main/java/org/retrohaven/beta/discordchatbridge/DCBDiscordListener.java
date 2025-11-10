@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -17,9 +18,11 @@ import java.util.logging.Level;
 
 public class DCBDiscordListener extends ListenerAdapter {
     private DiscordChatBridge plugin;
+    private DCBCommandHandler commandHandler;
 
-    public DCBDiscordListener(DiscordChatBridge plugin) {
+    public DCBDiscordListener(DiscordChatBridge plugin, DCBCommandHandler commandHandler) {
         this.plugin = plugin;
+        this.commandHandler = commandHandler;
     }
 
 
@@ -40,10 +43,22 @@ public class DCBDiscordListener extends ListenerAdapter {
 
         String gameBridgeChannelID = plugin.getConfig().getConfigString("channel-id");
         String[] messageCMD = event.getMessage().getContentRaw().split(" ");
+        String response;
 
-        //sorry for the mess of copy pasting the code into each if statement -Owen2k6
-        //Online Command
-        if (messageCMD[0].equalsIgnoreCase("!online") && plugin.getConfig().getConfigBoolean("online-command-enabled")) {
+        // Command handling
+        if (messageCMD[0].startsWith("!") ) {
+            if (plugin.getConfig().getConfigBoolean("bot-command-channel-enabled")) {
+                //Does it match?
+                if (Objects.equals(plugin.getConfig().getConfigString("bot-command-channel-id"), event.getChannel().getId())) {
+                    response = commandHandler.onCommand(messageCMD[0].substring(1), messageCMD);
+                }
+
+            } else {
+
+            }
+            if (messageCMD[0].equalsIgnoreCase("!online") && plugin.getConfig().getConfigBoolean("online-command-enabled")) {
+
+        }
 
             //Check for if its enabled.
             if (plugin.getConfig().getConfigBoolean("bot-command-channel-enabled")) {
